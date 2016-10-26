@@ -1,14 +1,13 @@
 import pymongo
 from functools import singledispatch
 
+
 class DB_Access:
   def __init__(self):
     self.client = pymongo.MongoClient('localhost', 27017)
     self.db = self.client.watashiko_db
     self.co = self.db.watshiko_collection
     self.tag_co = self.db.watshiko_tag_collection
-
-    pass
   
   def set_data(self,data):
     self.work = data
@@ -17,7 +16,6 @@ class DB_Access:
       if(not(self.tag_check(i))):
         self.set_tag(data['tag'])
     self.co.insert_one(data)
-    pass
   
   def get_data(self,ID):
     return(self.co.find({'ID':ID}))
@@ -25,7 +23,6 @@ class DB_Access:
 
   def erase_data(self,ID):
     self.co.remove({'ID':ID})
-#    pass
   
   def get_tag_list(self):
     tags=[]
