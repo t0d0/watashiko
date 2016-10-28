@@ -33,7 +33,7 @@ class DB_Access:
   def set_tag(self,tag):
     self.tag_co.insert_one({'tag':tag})
 
-  def get_list(self,ID = '',tag = '',num = 10):#ID:
+  def get_list(self,ID = '',tag = '',num = 10):
     if(ID == ''):
       ID = self.get_max_ID();
     if(tag == ''):

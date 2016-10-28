@@ -1,0 +1,12 @@
+body {
+  font-family:'Lucida Grande', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', "ＭＳ Ｐゴシック", sans-serif;
+  width: 80%;
+  margin: 0 auto;
+}
+h1 {
+  color:#FFC0CB;
+  font-size:200%;
+}
+li{
+  height: 300px;
+}

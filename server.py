@@ -14,9 +14,7 @@ server = None
 class MainHandler(tornado.web.RequestHandler):
 
   def get(self):
-    print("aaa")
-    self.write("welcome to watashiko")
-    
+    self.render("index.html")
 
 def args_to_dict(args):
   answer = {'id':'','tag':[]}
@@ -62,6 +60,9 @@ def serve_forever():
     (r"/", MainHandler),
       (r"/api/(?P<args>.+)", APIHandler)
       ],
+    template_path=os.path.join(os.getcwd(),  "templates"),
+    static_path=os.path.join(os.getcwd(),  "static"),
+    
   )
   application.listen(8889)
   print('Server launch')
