@@ -6,19 +6,8 @@ def callback(event, isInView):
   if(isInView):
     print("見えた")
 #    contents_list.appendChild()
-    doc["contents_list"].html += "<li>test</li>"
-    doc["contents_list"].html += "<li>test</li>"
-    doc["contents_list"].html += "<li>test</li>"
-    doc["contents_list"].html += "<li>test</li>"
-    doc["contents_list"].html += "<li>test</li>"
-    doc["contents_list"].html += "<li>test</li>"
-    doc["contents_list"].html += "<li>test</li>"    
-    doc["contents_list"].html += "<li>test</li>"
-    doc["contents_list"].html += "<li>test</li>"
-    doc["contents_list"].html += "<li>test</li>"
-    doc["contents_list"].html += "<li>test</li>"
-    doc["contents_list"].html += "<li>test</li>"
-    doc["contents_list"].html += "<li>test</li>"
+    for i in range(0,15):
+      doc["contents_list"].html += "<li>test</li>"
   else:
     print("消えた")
 
