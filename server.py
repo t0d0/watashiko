@@ -50,7 +50,7 @@ class APIHandler(tornado.web.RequestHandler):
 #    print(convert_data['id'])
     for i in db.get_list(ID = int(convert_data['id']),tag = convert_data['tag']):
       print(i)
-      self.write(str(i))
+      self.write(str(i).replace("\'","\""))
 
   def post(self):
     self.get_argument('main_comment')
