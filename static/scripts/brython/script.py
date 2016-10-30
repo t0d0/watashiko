@@ -2,15 +2,21 @@ from browser import window,document, alert
 from browser import document as doc
 from browser import ajax
 #import base64
-from javascript import JSConstructor
+#from javascript import JSConstructor
+
+json = window.JSON
+#import json
 jq = window.jQuery
 b64 = window.Base64
 #print(b64.encode("あああ"))
-
 def on_complete(req):
 #  print(req.text)
 #      for i in range(0,15):
-  doc["contents_list"].html += "<li>" + (req.text) + "</li>"
+  data = json.parse(str(req.text))
+  print(data['ID'])
+#  for i in data:
+#    print(i)
+  doc["contents_list"].html += "<li>" +(req.text) + "</li>"
 
 #    if req.status==200 or req.status==0:
 #        doc["result"].html = req.text
@@ -47,8 +53,6 @@ def get(url,param={}):
     req.send()
 #    print(req.text)
 #      print(i)
-
-
 
 def callback(event, isInView):
   if(isInView):
