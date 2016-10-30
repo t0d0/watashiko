@@ -31,14 +31,14 @@ class DB_Access:
   def set_tag(self,tag):
     self.tag_co.insert_one({'tag':tag})
 
-  def get_list(self,ID = '',tag = '',num = 10):
+  def get_list(self,ID = '',tag = '',num = 1):
     if(ID == '' or ID == -1):
       ID = self.get_max_ID()+1;
     if(tag == '' or tag[0] == "-1"):
       print("tag is none")
-      return(self.co.find({'ID':{'$lt': ID}}).sort('ID',-1).limit(num))
+      return(self.co.find({'ID':{'$lt': ID}},{"_id":0}).sort('ID',-1).limit(num))
     else:
-      return(self.co.find({'ID':{'$lt': ID},'tag':{'$in':tag}}).sort('ID',-1).limit(num))
+      return(self.co.find({'ID':{'$lt': ID},'tag':{'$in':tag}},{"_id":0}).sort('ID',-1).limit(num))
 
   def update_shikoiine(self,ID):
     self.co.update({'ID':ID}, {'$inc':{'shikoiine':1}})
