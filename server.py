@@ -11,10 +11,6 @@ from db_access import DB_Access
 import base64
 
 db = DB_Access()
-#for i in db.get_list():
-#  print(i)
-#print("aaa".encode('base64'))
-#print(base64.encodestring("あいうえおかきくけこ".encode("utf8")).decode("ascii"))
 
 global_text = ""
 server = None
@@ -31,10 +27,8 @@ def args_to_dict(args):
   i=0
   while(i<len(work)):
     if(work[i]=="id"):
-#      answer['id'] = work[i+1]
       answer['id'] = base64.decodestring(work[i+1].encode("ascii")).decode("utf8")
     if(work[i]=="tag"):
-#      answer['tag'].append(work[i+1])
       answer['tag'].append(base64.decodestring(work[i+1].encode("ascii")).decode("utf8"))
     i+=2
 #  print(answer)
@@ -48,10 +42,13 @@ class APIHandler(tornado.web.RequestHandler):
 
     convert_data = args_to_dict(kwargs['args'])
 #    print(convert_data['id'])
+    write_text = '{"item":['
     for i in db.get_list(ID = int(convert_data['id']),tag = convert_data['tag']):
       print(i)
-      self.write(str(i).replace("\'","\""))
-
+      write_text += (str(i).replace("\'","\"")+",")
+    write_text = write_text[:-1]
+    write_text += ']}'
+    self.write(write_text)
   def post(self):
     self.get_argument('main_comment')
     self.get_argument('sub_comment')
