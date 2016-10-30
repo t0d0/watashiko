@@ -7,9 +7,18 @@ import tornado.web
 import tornado.websocket
 import json
 import re
+from db_access import DB_Access
+import base64
+
+db = DB_Access()
+#for i in db.get_list():
+#  print(i)
+#print("aaa".encode('base64'))
+#print(base64.encodestring("あいうえおかきくけこ".encode("utf8")).decode("ascii"))
 
 global_text = ""
 server = None
+
 
 class MainHandler(tornado.web.RequestHandler):
 
@@ -18,15 +27,17 @@ class MainHandler(tornado.web.RequestHandler):
 
 def args_to_dict(args):
   answer = {'id':'','tag':[]}
-  work = re.split(',|=',args)
+  work = re.split(',',args)
   i=0
   while(i<len(work)):
     if(work[i]=="id"):
-      answer['id'] = work[i+1]
+#      answer['id'] = work[i+1]
+      answer['id'] = base64.decodestring(work[i+1].encode("ascii")).decode("utf8")
     if(work[i]=="tag"):
-      answer['tag'].append(work[i+1])
+#      answer['tag'].append(work[i+1])
+      answer['tag'].append(base64.decodestring(work[i+1].encode("ascii")).decode("utf8"))
     i+=2
-  print(answer)
+#  print(answer)
   return(answer)
 
 
@@ -34,24 +45,19 @@ def args_to_dict(args):
 class APIHandler(tornado.web.RequestHandler):
 
   def get(self,*args, **kwargs):
-#    print("args")
-#    print(args)
-#    print("kwargs")
-#    print(kwargs['args'])
-    args_to_dict(kwargs['args'])
-#    id=123,tag=123,tag=aaaみたいな感じ
-#    work = kwargs['args'].split(',|=')
-#    print(key_val_list_to_dict(work))
-    
-    self.write("printed")
-#    tagはバイトコードとかにして受け取らないとバグるのでjsで変換してから受け取る?
+
+    convert_data = args_to_dict(kwargs['args'])
+#    print(convert_data['id'])
+    for i in db.get_list(ID = int(convert_data['id']),tag = convert_data['tag']):
+      print(i)
+      self.write(str(i))
+
   def post(self):
     self.get_argument('main_comment')
     self.get_argument('sub_comment')
     self.get_argument('url')
     self.get_argument('tag')#→カンマ区切りなので分割する
     self.get_argument('time_stamp')
-
 
 #実行用関数
 def serve_forever():

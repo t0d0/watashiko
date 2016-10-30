@@ -54,7 +54,7 @@ def callback(event, isInView):
   if(isInView):
     print("見えた")
 #    print( base64.b64encode("見えた"))
-    get("http://t0d0.jp:8889/api/",{"id":"123","tag":["tag2","tag2"]})
+    get("http://t0d0.jp:8889/api/",{"id":"-1","tag":["-1"]})#-1でnone指定
 #    contents_list.appendChild()
 #    for i in range(0,15):
 #      doc["contents_list"].html += "<li>test</li>"
