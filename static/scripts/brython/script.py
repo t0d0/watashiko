@@ -101,6 +101,10 @@ def post(ev):
       'url':b64.encode(doc['url'].value),
       'tag':b64.encode(doc['tag'].value)
     })
+    doc['main_comment'].value = ""
+    doc['sub_comment'].value = ""
+    doc['url'].value = ""
+    doc['tag'].value = ""
     return(0)
     
 #    print(jq(ev.target).attr('id'))
