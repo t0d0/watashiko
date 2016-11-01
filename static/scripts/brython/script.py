@@ -1,9 +1,9 @@
 #!/bin/env python
 # -*- coding: utf-8 -*-
-from browser import window,document, alert
+from browser import window, alert,document
 from browser import document as doc
 from browser import ajax
-
+locat = window.location
 json = window.JSON
 jq = window.jQuery
 b64 = window.Base64
@@ -42,8 +42,16 @@ def get_complete(req):
 
 
 def post_complete(req):
-  print(req.text)
-  pass
+#  print(req.text)
+
+  jq('#last').off('inview', callback)
+  doc.getElementById("close").click()
+  content_index = 0
+  doc["contents_list"].html = ""
+  jq('#last').on('inview', callback)
+
+  
+#  pass
 
 
 def err_msg():
