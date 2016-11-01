@@ -9,6 +9,7 @@ import json
 import re
 from db_access import DB_Access
 import base64
+import sys
 
 db = DB_Access()
 
@@ -30,13 +31,14 @@ def args_to_dict(args):
   answer = {'id':'','tag':[]}
   work = re.split(',',args)
   i=0
+#  print(base64.decodestring(work[i+1].encode("ascii")).decode("utf8"))
   while(i<len(work)):
     if(work[i]=="id"):
       answer['id'] = base64.decodestring(work[i+1].encode("ascii")).decode("utf8")
     if(work[i]=="tag"):
       answer['tag'].append(base64.decodestring(work[i+1].encode("ascii")).decode("utf8"))
     i+=2
-#  print(answer)
+  print(answer)
   return(answer)
 
 
@@ -49,18 +51,27 @@ class APIHandler(tornado.web.RequestHandler):
 #    print(convert_data['id'])
     write_text = '{"item":['
     for i in db.get_list(ID = int(convert_data['id']),tag = convert_data['tag']):
-      print(i)
+#      print(i)
       write_text += (str(i).replace("\'","\"")+",")
-    write_text = write_text[:-1]
+    write_text = write_text[:-1]#最後のカンマを除去
     write_text += ']}'
     self.write(write_text)
+    
   def post(self):
 #    pass
-    self.write("test")
-    print(self.get_argument('main_comment'))
-    print(self.get_argument('sub_comment'))
-    print(self.get_argument('url'))
-    print(self.get_argument('tag'))#→カンマ区切りなので分割する
+    print("testdayooooooooooooooooo")
+#    self.write("test")
+#    text = self.get_argument('main_comment')
+#    self.write(text)
+    data = {"main_comment":base64.decodestring(self.get_argument('main_comment').encode("ascii")).decode("utf-8"),
+     "sub_comment":base64.decodestring(self.get_argument('sub_comment').encode("ascii")).decode("utf-8"),
+     "url":base64.decodestring(self.get_argument('url').encode("ascii")).decode("utf-8"),
+     "tag":re.split(',',base64.decodestring(self.get_argument('tag').encode("ascii")).decode("utf-8"))
+           }
+##    print(base64.decodestring(self.get_argument('tag').encode("ascii")).decode("utf-8"))
+#    for i in re.split(',',base64.decodestring(self.get_argument('tag').encode("ascii")).decode("utf-8")):
+#      print(i)
+    db.set_data(data)
 
 #実行用関数
 def serve_forever():
@@ -76,9 +87,10 @@ def serve_forever():
     
   )
   application.listen(8889)
-  print('Server launch')
+  print=('サーバー起動')
   server = tornado.ioloop.IOLoop.instance()
   server.start()
 
+  
 if __name__ == "__main__":
   serve_forever()

@@ -1,3 +1,5 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
 from browser import window,document, alert
 from browser import document as doc
 from browser import ajax
@@ -7,7 +9,7 @@ jq = window.jQuery
 b64 = window.Base64
 last_id = -1;
 content_index = 0
-def on_complete(req):
+def get_complete(req):
   global last_id
   global content_index
   data = json.parse(str(req.text))
@@ -38,15 +40,19 @@ def on_complete(req):
 #        print(req.text)
   pass
 
+
+def post_complete(req):
+  print(req.text)
+  pass
+
+
 def err_msg():
     doc["result"].html = "server didn't reply after %s seconds" %timeout
 
 timeout = 4
-
-
 def get(url,param={}):
     req = ajax.ajax()
-    req.bind('complete',on_complete)
+    req.bind('complete',get_complete)
     req.set_timeout(timeout,err_msg)
     send_param = url
     for i in param.keys():
@@ -60,15 +66,38 @@ def get(url,param={}):
     req.send()
 
 def post(ev):
-  
-#    req = ajax.ajax()
-#    req.bind('complete',on_complete)
-#    req.set_timeout(timeout,err_msg)
-#    send_param = url
-#    req.open('GET',send_param,True)
-#    req.send()
-  print(jq(ev.target).attr('id'))
+    url = "http://t0d0.jp:8889/api"
+#    print(doc['main_comment'].value)
+#    jq.ajax({
+#      'type': "POST",
+#      'url':target ,
+#      'data': {
+#      'main_comment':doc['main_comment'].value,
+##      'sub_comment':b64.encode(doc['sub_comment'].value),
+##      'url':b64.encode(doc['url'].value),
+##      'tag':b64.encode(doc['tag'].value)
+#    },
+#   success=lambda msg:print(msg)
+##   }
+# });
+    req = ajax.ajax()
+    req.bind('complete',post_complete)
+    req.set_timeout(timeout,err_msg)
+
+    req.open('POST',url,True)
+    req.set_header('content-type','application/x-www-form-urlencoded')
+
+    req.send({
+      'main_comment':b64.encode(doc['main_comment'].value),
+      'sub_comment':b64.encode(doc['sub_comment'].value),
+      'url':b64.encode(doc['url'].value),
+      'tag':b64.encode(doc['tag'].value)
+    })
+    return(0)
+    
+#    print(jq(ev.target).attr('id'))
 #  print("shiko")
+
 
 def callback(event, isInView):
   global last_id
