@@ -21,6 +21,11 @@ class MainHandler(tornado.web.RequestHandler):
   def get(self):
     self.render("index.html")
 
+class NewContentHandler(tornado.web.RequestHandler):
+
+  def get(self):
+    self.render("new_content.html")
+
 def args_to_dict(args):
   answer = {'id':'','tag':[]}
   work = re.split(',',args)
@@ -50,18 +55,21 @@ class APIHandler(tornado.web.RequestHandler):
     write_text += ']}'
     self.write(write_text)
   def post(self):
-    self.get_argument('main_comment')
-    self.get_argument('sub_comment')
-    self.get_argument('url')
-    self.get_argument('tag')#→カンマ区切りなので分割する
-    self.get_argument('time_stamp')
+#    pass
+    self.write("test")
+    print(self.get_argument('main_comment'))
+    print(self.get_argument('sub_comment'))
+    print(self.get_argument('url'))
+    print(self.get_argument('tag'))#→カンマ区切りなので分割する
 
 #実行用関数
 def serve_forever():
   global server
   application = tornado.web.Application([
     (r"/", MainHandler),
-      (r"/api/(?P<args>.+)", APIHandler)
+    (r"/api/(?P<args>.+)", APIHandler),
+    (r"/api", APIHandler),
+    (r"/new_content", NewContentHandler),
       ],
     template_path=os.path.join(os.getcwd(),  "templates"),
     static_path=os.path.join(os.getcwd(),  "static"),
