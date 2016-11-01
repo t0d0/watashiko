@@ -43,10 +43,12 @@ def get_complete(req):
 
 def post_complete(req):
 #  print(req.text)
-
-  jq('#last').off('inview', callback)
+  global last_id
+  global content_index
+  jq('#last').off('inview')
   doc.getElementById("close").click()
   content_index = 0
+  last_id = -1;
   doc["contents_list"].html = ""
   jq('#last').on('inview', callback)
 
