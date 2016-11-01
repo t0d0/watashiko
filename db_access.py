@@ -1,5 +1,6 @@
 import pymongo
 from functools import singledispatch
+from datetime import datetime
 
 class DB_Access:
   def __init__(self):
@@ -11,6 +12,10 @@ class DB_Access:
   def set_data(self,data):
     self.work = data
     data['ID'] = (self.get_max_ID() + 1)
+    data['date'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    data['shikoiine'] = 0
+    data['naerune'] = 0
+    data['guilty'] = 0
     for i in data['tag']:
       if(not(self.tag_check(i))):
         self.set_tag(data['tag'])
@@ -31,7 +36,7 @@ class DB_Access:
   def set_tag(self,tag):
     self.tag_co.insert_one({'tag':tag})
 
-  def get_list(self,ID = '',tag = '',num = 1):
+  def get_list(self,ID = '',tag = '',num = 10):
     if(ID == '' or ID == -1):
       ID = self.get_max_ID()+1;
     if(tag == '' or tag[0] == "-1"):
@@ -57,3 +62,9 @@ class DB_Access:
     for i in self.tag_co.find({'tag':tag}):
       return(True)
     return(False)
+  
+db = DB_Access()
+#db.erase_data(35)
+#db.erase_data(34)
+for i in db.get_list():
+  print(i)
