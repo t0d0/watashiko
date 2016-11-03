@@ -7,52 +7,51 @@ locat = window.location
 json = window.JSON
 jq = window.jQuery
 b64 = window.Base64
-last_id = -1;
+req_num = 10
+last_id = -1
 content_index = 0
 selected_tag = ["-1"]
 def get_complete(req):
   global last_id
   global content_index
-  data = json.parse(str(req.text))
-  print(len(data['item']))
-  for i in range(0,len(data['item'])):
-    add_html = "<li>"
-    add_html += "<h2>" + data['item'][i].main_comment + "</h2>"
-    add_html += "<p>" + data['item'][i].url + "</p>"
-    add_html += "<p>" + data['item'][i].sub_comment + "</p>"
-    add_html += "<p class = 'shikoiine' id = '"+str(data['item'][i].ID)+"'>shikoiine:" + str(data['item'][i].shikoiine) + "</p>"
-    add_html += "<p class = 'naerune' id = '"+str(data['item'][i].ID)+"'>naerune:" + str(data['item'][i].naerune) + "</p>"
-    add_html += "<p class = 'guilty' id = '"+str(data['item'][i].ID)+"'>guilty:" + str(data['item'][i].guilty) + "</p>"
-    add_html += "<p>ID:" + str(data['item'][i].ID) + "</p>"
-    last_id = data['item'][i].ID
-    for tag_index in range(0,len(data['item'][i].tag)):
-      add_html += "<p class='tag'>" + data['item'][i].tag[tag_index] + "</p>"
-    add_html += "</li>"
-    doc["contents_list"].html += add_html
-#    jq(".shikoiine").on("click",post)
-    jq(".tag").on("click",tag_select)
-    
-    content_index += 1
+  if(req.text=="No_Data"):
+    print("これ以上読み込めません")
+  else:
+    data = json.parse(str(req.text))
+    print(str(req.text))
+    print(len(data['item']))
+    for i in range(0,len(data['item'])):
+      add_html = "<li>"
+      add_html += "<h2>" + data['item'][i].main_comment + "</h2>"
+      add_html += "<p>" + data['item'][i].url + "</p>"
+      add_html += "<p>" + data['item'][i].sub_comment + "</p>"
+      add_html += "<p class = 'shikoiine' id = '"+str(data['item'][i].ID)+"'>shikoiine:" + str(data['item'][i].shikoiine) + "</p>"
+      add_html += "<p class = 'naerune' id = '"+str(data['item'][i].ID)+"'>naerune:" + str(data['item'][i].naerune) + "</p>"
+      add_html += "<p class = 'guilty' id = '"+str(data['item'][i].ID)+"'>guilty:" + str(data['item'][i].guilty) + "</p>"
+      add_html += "<p>ID:" + str(data['item'][i].ID) + "</p>"
+      last_id = data['item'][i].ID
+      for tag_index in range(0,len(data['item'][i].tag)):
+        add_html += "<p class='tag'>" + data['item'][i].tag[tag_index] + "</p>"
+      add_html += "</li>"
+      doc["contents_list"].html += add_html
+      jq(".shikoiine").on("click",put)
+      jq(".tag").on("click",tag_select)
 
-#    if req.status==200 or req.status==0:
-#        doc["result"].html = req.text
-#        print("aaaaa"+req.text)
-#    else:
-#        doc["result"].html = "error "+req.text
-#        print(req.text)
-  pass
+      content_index += 1
+
+  #    if req.status==200 or req.status==0:
+  #        doc["result"].html = req.text
+  #        print("aaaaa"+req.text)
+  #    else:
+  #        doc["result"].html = "error "+req.text
+  #        print(req.text)
+    pass
 
 def post_complete(req):
 #  print(req.text)
-  global last_id
-  global content_index
-  jq('#last').off('inview')
   doc.getElementById("close").click()
-  content_index = 0
-  last_id = -1
-  doc["contents_list"].html = ""
-  jq('#last').on('inview', callback)
-
+  reload_list()
+  
 def err_msg():
     doc["result"].html = "server didn't reply after %s seconds" %timeout
 
@@ -72,6 +71,10 @@ def get(url,param={}):
     req.open('GET',send_param,True)
     req.send()
 
+def put(ev):
+  pass
+
+#postメソッド自体は分離してjqコールバック内から関数だけ呼び出しのほうが健全
 def post(ev):
     url = "http://t0d0.jp:8889/api"
     req = ajax.ajax()
@@ -94,15 +97,9 @@ def post(ev):
     print("ポストしたよ")
     return(0)
     
-def list_reset():
-  global last_id
-  global content_index
+def reload_list():
   doc["contents_list"].html = ""
-  jq('#last').off('inview')
-  content_index = 0
-  last_id = -1
-  jq('#last').on('inview',callback)
-
+  get("http://t0d0.jp:8889/api/",{"id":-1,"tag":selected_tag,"num":int(req_num)})
 
 def tag_select(ev):
   global selected_tag
@@ -110,15 +107,16 @@ def tag_select(ev):
     selected_tag = [ev.target.text]
   else:
     selected_tag.append(ev.target.text)
-  list_reset()
+  reload_list()
   print(selected_tag)
 
 def callback(event, isInView):
   global last_id
   global selected_tag
+  global req_num
   if(isInView):
     print("見えた")
-    get("http://t0d0.jp:8889/api/",{"id":last_id,"tag":selected_tag})#-1でnone指定
+    get("http://t0d0.jp:8889/api/",{"id":last_id,"tag":selected_tag,"num":int(req_num)})#-1でnone指定
 
   else:
     print("消えた")
