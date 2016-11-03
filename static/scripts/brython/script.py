@@ -11,6 +11,7 @@ req_num = 10
 last_id = -1
 content_index = 0
 selected_tag = ["-1"]
+api_address = "http://t0d0.jp:8889/api/"
 def get_complete(req):
   global last_id
   global content_index
@@ -34,7 +35,9 @@ def get_complete(req):
         add_html += "<p class='tag'>" + data['item'][i].tag[tag_index] + "</p>"
       add_html += "</li>"
       doc["contents_list"].html += add_html
-      jq(".shikoiine").on("click",put)
+      jq(".shikoiine").on("click",shikoiine_click)
+      jq(".naerune").on("click",naerune_click)
+      jq(".guilty").on("click",guilty_click)
       jq(".tag").on("click",tag_select)
 
       content_index += 1
@@ -46,7 +49,12 @@ def get_complete(req):
   #        doc["result"].html = "error "+req.text
   #        print(req.text)
     pass
-
+def shikoiine_click(ev):
+  put(api_address + ev.target.id,{"action":"shikoiine"})
+def naerune_click(ev):
+  put(api_address + ev.target.id,{"action":"naerune"})
+def guilty_click(ev):
+  put(api_address + ev.target.id,{"action":"guilty"})
 def post_complete(req):
 #  print(req.text)
   doc.getElementById("close").click()
@@ -71,12 +79,17 @@ def get(url,param={}):
     req.open('GET',send_param,True)
     req.send()
 
-def put(ev):
-  pass
+def put_callback(data,text_status):
+  reload_list()
+  print("aaojgarowerag")
 
-#postメソッド自体は分離してjqコールバック内から関数だけ呼び出しのほうが健全
+def put(url,param):
+  jq.put(url, param,(lambda data, text_status:reload_list()),(lambda request, text_status, error_thrown:reload_list()))
+
+
+#postメソッド自体は分離してjqコールバック内から関数だけ呼び出しのほうが健全かな。
 def post(ev):
-    url = "http://t0d0.jp:8889/api"
+    url = api_address
     req = ajax.ajax()
     req.bind('complete',post_complete)
     req.set_timeout(timeout,err_msg)
@@ -99,7 +112,7 @@ def post(ev):
     
 def reload_list():
   doc["contents_list"].html = ""
-  get("http://t0d0.jp:8889/api/",{"id":-1,"tag":selected_tag,"num":int(req_num)})
+  get(api_address,{"id":-1,"tag":selected_tag,"num":int(req_num)})
 
 def tag_select(ev):
   global selected_tag
@@ -110,16 +123,16 @@ def tag_select(ev):
   reload_list()
   print(selected_tag)
 
-def callback(event, isInView):
+def inview_callback(event, isInView):
   global last_id
   global selected_tag
   global req_num
   if(isInView):
     print("見えた")
-    get("http://t0d0.jp:8889/api/",{"id":last_id,"tag":selected_tag,"num":int(req_num)})#-1でnone指定
+    get(api_address,{"id":last_id,"tag":selected_tag,"num":int(req_num)})#-1でnone指定
 
   else:
     print("消えた")
 
-jq('#last').on('inview', callback)
+jq('#last').on('inview', inview_callback)
 jq('.shikotta-button').on('click',post)
