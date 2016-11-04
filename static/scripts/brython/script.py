@@ -65,8 +65,9 @@ def guilty_click(ev):
   put(api_address + ev.target.id,{"action":"guilty"})
   
 def post_complete(req):
-#  print(req.text)
   doc.getElementById("close").click()
+  if(req.status == 500):
+    alert("新規コンテンツの投稿に失敗しました。")
   reload_list()
   
 def err_msg():
