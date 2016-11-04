@@ -63,11 +63,21 @@ class APIHandler(tornado.web.RequestHandler):
     
   @tornado.web.asynchronous
   def post(self, *args, **kwargs):
-    data = {"main_comment":base64.decodestring(self.get_argument('main_comment').encode("ascii")).decode("utf-8"),
-     "sub_comment":base64.decodestring(self.get_argument('sub_comment').encode("ascii")).decode("utf-8"),
-     "url":base64.decodestring(self.get_argument('url').encode("ascii")).decode("utf-8"),
-     "tag":re.split(',',base64.decodestring(self.get_argument('tag').encode("ascii")).decode("utf-8"))
+    
+    data = {
+      "main_comment":base64.decodestring(self.get_argument('main_comment').encode("ascii")).decode("utf-8"),
+      "sub_comment":base64.decodestring(self.get_argument('sub_comment').encode("ascii")).decode("utf-8"),
+      "url":base64.decodestring(self.get_argument('url').encode("ascii")).decode("utf-8"),
+      "tag":re.split(',',base64.decodestring(self.get_argument('tag').encode("ascii")).decode("utf-8"))
            }
+    
+    data["main_comment"] = re.sub(r',|\\|<|>|\?|\"|\'|[|]', '', data["main_comment"])
+    data["sub_comment"] = re.sub(r',|\\|<|>|\?|\"|\'|[|]', '', data["sub_comment"])
+    data["url"] = re.sub(r',|\\|<|>|\?|\"|\'|[|]', '', data["url"])
+    for tag in range(0,len(data["tag"])):
+      data["tag"][tag] = re.sub(r',|\\|<|>|\?|\"|\'|[|]|\/', '', data["tag"][tag])
+
+#    print(data)
     
     db.set_data(data)
     self.finish()
@@ -91,7 +101,6 @@ class APIHandler(tornado.web.RequestHandler):
     for i in db.get_data(int(ID)):
       write_text += str(i)
     print(write_text)
-    
     
     None_flag = False
     write_text = '{"item":['
