@@ -3,22 +3,27 @@
 from browser import window, alert,document
 from browser import document as doc
 from browser import ajax
-#locat = window.location
 json = window.JSON
 jq = window.jQuery
 b64 = window.Base64
 req_num = 10
 last_id = -1
 content_index = 0
+timeout = 4
 selected_tag = ["-1"]
 api_address = "http://t0d0.jp:8889/api/"
-now_hash = ""
+clicked_hash = ""
+
 def get_complete(req):
   global last_id
   global content_index
   global lacat
   if(req.text=="No_Data"):
+    jq('#last').off('inview')
     print("これ以上読み込めません")
+    doc["last"].html = "これ以上読み込めません"
+    jq('#last').on('inview', inview_callback)
+
   else:
     data = json.parse(str(req.text))
 #    print(str(req.text))
@@ -42,19 +47,21 @@ def get_complete(req):
       jq(".guilty").on("click",guilty_click)
       jq(".tag").on("click",tag_select)
       content_index += 1
+      jq('#last').off('inview')
+      doc["last"].html = "Now loading next shiko..."
+      jq('#last').on('inview', inview_callback)
       
-    pass
 def shikoiine_click(ev):
-  global now_hash
-  now_hash = ev.target.id
+  global clicked_hash
+  clicked_hash = ev.target.id
   put(api_address + ev.target.id,{"action":"shikoiine"})
 def naerune_click(ev):
-  global now_hash
-  now_hash = ev.target.id
+  global clicked_hash
+  clicked_hash = ev.target.id
   put(api_address + ev.target.id,{"action":"naerune"})
 def guilty_click(ev):
-  global now_hash
-  now_hash = ev.target.id
+  global clicked_hash
+  clicked_hash = ev.target.id
   put(api_address + ev.target.id,{"action":"guilty"})
   
 def post_complete(req):
@@ -65,7 +72,6 @@ def post_complete(req):
 def err_msg():
     doc["result"].html = "server didn't reply after %s seconds" %timeout
 
-timeout = 4
 def get(url,param={}):
     req = ajax.ajax()
     req.bind('complete',get_complete)
@@ -82,18 +88,9 @@ def get(url,param={}):
     req.send()
 
 def put_callback(data,text_status):
-#  reload_list()
   work = data['responseJSON']
-#    print(i)
-#  work = json.parse(str(data))
-#  print("data="+data)
-#  print("text_status"+text_status)
-#  print("req="+req)
   i = 0
-#  print(work['item'][i].main_comment)
-  
   add_html = ""
-#  print(now_hash)
   add_html += "<h2>" + work['item'][i].main_comment + "</h2>"
   add_html += "<p>" + work['item'][i].url + "</p>"
   add_html += "<p>" + work['item'][i].sub_comment + "</p>"
@@ -101,18 +98,14 @@ def put_callback(data,text_status):
   add_html += "<p class = 'naerune' id = '"+str(work['item'][i].ID)+"'>naerune:" + str(work['item'][i].naerune) + "</p>"
   add_html += "<p class = 'guilty' id = '"+str(work['item'][i].ID)+"'>guilty:" + str(work['item'][i].guilty) + "</p>"
   add_html += "<p>ID:" + str(work['item'][i].ID) + "</p>"
-#  last_id = data['item'][i].ID
   for tag_index in range(0,len(work['item'][i].tag)):
     add_html += "<p class='tag'>" + work['item'][i].tag[tag_index] + "</p>"
   print(add_html)
-  doc[now_hash].html = add_html
+  doc[clicked_hash].html = add_html
   jq(".shikoiine").on("click",shikoiine_click)
   jq(".naerune").on("click",naerune_click)
   jq(".guilty").on("click",guilty_click)
   jq(".tag").on("click",tag_select)
-
-  
-
 
 def put(url,param):
   jq.put(url, param,put_callback,(lambda request, text_status, error_thrown:print("session failed")))
