@@ -1,10 +1,10 @@
 $.extend({
 	"put" : function (url, data, success, error) {
-		error = error || function() {}; 
+//		error = error || function() {}; 
 		return $.ajax({
 			"url" : url,
 			"data" : data,
-			"success" : success,
+			"complete" : success,
 			"type" : "PUT",
 			"cache" : false,
 			"error" : error,
@@ -16,7 +16,7 @@ $.extend({
 		return $.ajax({
 			"url" : url,
 			"data" : data,
-			"success" : success,
+			"complete" : success,
 			"type" : "DELETE",
 			"cache" : false,
 			"error" : error,
