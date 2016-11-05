@@ -21,6 +21,8 @@
   <p>〜私、これでシコりました〜</p>
   <p>匿名型アダルトコンテンツ共有サービス(現在鋭意開発中)</p>
   <div class="new-shiko"><a href="#modal_form">新規shiko投稿</a></div>
+  <div class="about"><a href="#modal_about">about</a></div>
+  
     <section class="modal-window" id="modal_form">
     <div class="modal-inner">
       <form action="http://t0d0.jp:8889/api" method="post">
@@ -45,18 +47,30 @@
           <br>
           <input type="text" id="tag" size="40">
         </p>
-        <p>
-          <input type="button" id = "aaa" class="shikotta-button" value="shikotta">
+<!--        <p>-->
+          <input type="button" id = "aaa" class="shikotta-button" value="shikotta"><p>特殊記号類は自動的に取り除かれます。</p>
 <!--          <input type="reset" value="リセット">-->
-        </p>
+<!--        </p>-->
       </form>
     </div>
-            <a id="close" href="#!" class="modal-close">close</a><p>特殊記号類は自動的に取り除かれます。</p>
+            <a id="close" href="#!" class="modal-close">close</a>
 
   </section>
-<!--  <section>-->
+  <section class="modal-window" id="modal_about">
+    <div class="modal-inner">
+      <h2>What is This?</h2>
+      <p>このページは匿名型アダルトコンテンツ共有サービス「watashi.co」です。</p>
+      <p>著作権やその他の法律、リテラシーに反するコンテンツの共有は禁止しています。</p>
+      <p>該当するコンテンツは通報ボタンを押してください。</p>
+      <p>このサービスを構成するソースコードなどは全て<a href = "https://github.com/t0d0/watashiko">github</a>上で公開されています。</p>
+    </div>
+          <a id="close" href="#!" class="modal-close">close</a>
+
+  </section>
+
+
     <ul id="contents_list"></ul>
     <p id="last">Now loading next shiko...</p>
-<!--  </section>-->
+
 </body>
 </html>

@@ -29,9 +29,20 @@ li{
 li p{
   text-align: left;
 }
+h2{
+  text-align: center;
+/*  color:#FFC0CB;*/
+  font-size:200%;
+}
 .new-shiko{
   position: fixed;
   left:80%;
+  background: #FFC0CB;
+}
+.about{
+  position: fixed;
+  left:75%;
+/*  top: 100px;*/
   background: #FFC0CB;
 }
 .modal-window {
@@ -115,4 +126,7 @@ text-indent: 0;
 -webkit-transition: opacity 0.4s;
 -o-transition: opacity 0.4s;
 transition: opacity 0.4s;
+}
+form{
+  text-align: center;!important
 }
