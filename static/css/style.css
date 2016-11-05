@@ -4,14 +4,29 @@ body {
 /*  margin: 0 auto;*/
 }
 h1 {
+  text-align: center;
   color:#FFC0CB;
   font-size:200%;
 }
+p{
+  text-align: center;
+
+}
+ul{
+  text-align: center;
+}
 li{
+  border-left: 1px solid #000000;
+  border-bottom: 1px solid #000000;
+  list-style-type: none;
+}
+li p{
+  text-align: left;
 }
 .new-shiko{
   position: fixed;
-  left:90%;
+  left:80%;
+  background: #FFC0CB;
 }
 .modal-window {
 -webkit-transform: translate(0, 100%);
