@@ -1,7 +1,11 @@
 body {
   font-family:'Lucida Grande', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', "ＭＳ Ｐゴシック", sans-serif;
-/*  width: 80%;*/
+  width: 80%;
 /*  margin: 0 auto;*/
+/*  text-align: center;*/
+  margin-right: auto;
+  margin-left : auto;
+
 }
 h1 {
   text-align: center;
@@ -13,9 +17,11 @@ p{
 
 }
 ul{
+  padding: 0;
   text-align: center;
 }
 li{
+  padding-left: 20px;
   border-left: 1px solid #000000;
   border-bottom: 1px solid #000000;
   list-style-type: none;
