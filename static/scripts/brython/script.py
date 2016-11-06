@@ -31,7 +31,7 @@ def get_complete(req):
     for i in range(0,len(data['item'])):
       add_html = "<li name = '"+str(data['item'][i].ID)+"' id = '"+ str(data['item'][i].ID) +"'>"
       add_html += "<h2>" + data['item'][i].main_comment + "</h2>"
-      add_html += "<img src = '" + data['item'][i].path + "' />"
+      add_html += "<img src = '" + data['item'][i].path + "?new Date().getTime()' />"
       add_html += "<p>" + data['item'][i].url + "</p>"
       add_html += "<p>" + data['item'][i].sub_comment + "</p>"
       add_html += "<p class = 'shikoiine' id = '"+str(data['item'][i].ID)+"'>shikoiine:" + str(data['item'][i].shikoiine) + "</p>"
