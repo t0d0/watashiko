@@ -22,7 +22,7 @@ class DB_Access:
     self.co.insert_one(data)
 
   def get_data(self,ID):
-    return(self.co.find({'ID':ID}))
+    return(self.co.find({'ID':ID},{"_id":0}))
 
   def erase_data(self,ID):
     self.co.remove({'ID':ID})
@@ -66,5 +66,7 @@ class DB_Access:
 db = DB_Access()
 #db.erase_data(35)
 #db.erase_data(34)
-for i in db.get_list():
-  print(i)
+for i in range(0,98):
+  db.erase_data(i)
+#for i in db.get_list():
+#  print(i)
