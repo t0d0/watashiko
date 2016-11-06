@@ -1,21 +1,27 @@
 #!/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function
+from db_access import DB_Access
+from get_thumbnail import GetThumbnailThread
+from datetime import datetime
+import hashlib
+
 import os
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
 import json
 import re
-from db_access import DB_Access
 import base64
 import sys
 
-db = DB_Access()
 
+db = DB_Access()
+img_root_path = "/var/www/tornado/watashiko/static/img"
+img_root_url = "http://images.watashi.co"
 global_text = ""
 server = None
-
+thumb = None
 class MainHandler(tornado.web.RequestHandler):
 
   def get(self):
@@ -63,7 +69,7 @@ class APIHandler(tornado.web.RequestHandler):
     
   @tornado.web.asynchronous
   def post(self, *args, **kwargs):
-    
+#    global thumb
     data = {
       "main_comment":base64.decodestring(self.get_argument('main_comment').encode("ascii")).decode("utf-8"),
       "sub_comment":base64.decodestring(self.get_argument('sub_comment').encode("ascii")).decode("utf-8"),
@@ -74,6 +80,12 @@ class APIHandler(tornado.web.RequestHandler):
     data["main_comment"] = re.sub(r',|\\|<|>|\?|\"|\'|[|]', '', data["main_comment"])
     data["sub_comment"] = re.sub(r',|\\|<|>|\?|\"|\'|[|]', '', data["sub_comment"])
     data["url"] = re.sub(r',|\\|<|>|\?|\"|\'|[|]', '', data["url"])
+    target_path = img_root_path + "/" + datetime.now().strftime('%Y%m')
+    print("target_path = " + target_path)
+    file_name = hashlib.md5((datetime.now().strftime('%s') + str(db.get_max_ID()) + data["main_comment"]).encode('utf-8')).hexdigest() + ".jpg"
+    thumb.append_task(target_path,file_name,data["url"])
+#    print(data["url"])
+    data["path"] = img_root_url + "/" +datetime.now().strftime('%Y%m')+ "/" + file_name
     for tag in range(0,len(data["tag"])):
       data["tag"][tag] = re.sub(r',|\\|<|>|\?|\"|\'|[|]|\/', '', data["tag"][tag])
 
@@ -117,6 +129,9 @@ class APIHandler(tornado.web.RequestHandler):
 #実行用関数
 def serve_forever():
   global server
+  global thumb
+  thumb = GetThumbnailThread()
+  thumb.start()
   application = tornado.web.Application([
     (r"/", MainHandler),
     (r"/api/(?P<args>.+)", APIHandler),
@@ -127,7 +142,6 @@ def serve_forever():
       ],
     template_path=os.path.join(os.getcwd(),  "templates"),
     static_path=os.path.join(os.getcwd(),  "static"),
-    
   )
   application.listen(8889)
   print=('サーバー起動')
