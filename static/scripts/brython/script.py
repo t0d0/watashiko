@@ -11,7 +11,7 @@ last_id = -1
 content_index = 0
 timeout = 4
 selected_tag = ["-1"]
-api_address = "http://t0d0.jp:8889/api/"
+api_address = "http://watashi.co/api/"
 clicked_hash = ""
 
 def get_complete(req):
@@ -26,11 +26,12 @@ def get_complete(req):
 
   else:
     data = json.parse(str(req.text))
-#    print(str(req.text))
+    print(str(req.text))
 #    print(len(data['item']))
     for i in range(0,len(data['item'])):
       add_html = "<li name = '"+str(data['item'][i].ID)+"' id = '"+ str(data['item'][i].ID) +"'>"
       add_html += "<h2>" + data['item'][i].main_comment + "</h2>"
+      add_html += "<img src = '" + data['item'][i].path + "' />"
       add_html += "<p>" + data['item'][i].url + "</p>"
       add_html += "<p>" + data['item'][i].sub_comment + "</p>"
       add_html += "<p class = 'shikoiine' id = '"+str(data['item'][i].ID)+"'>shikoiine:" + str(data['item'][i].shikoiine) + "</p>"
@@ -93,6 +94,8 @@ def put_callback(data,text_status):
   i = 0
   add_html = ""
   add_html += "<h2>" + work['item'][i].main_comment + "</h2>"
+  add_html += "<img src = '" + work['item'][i].path + "' />"
+
   add_html += "<p>" + work['item'][i].url + "</p>"
   add_html += "<p>" + work['item'][i].sub_comment + "</p>"
   add_html += "<p class = 'shikoiine' id = '"+str(work['item'][i].ID)+"'>shikoiine:" + str(work['item'][i].shikoiine) + "</p>"
@@ -152,7 +155,7 @@ def tag_select(ev):
 
 def inview_callback(event, isInView):
   global last_id
-  global selected_tag
+  global  selected_tag
   global req_num
   if(isInView):
 #    print("見えた")
