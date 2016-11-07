@@ -77,12 +77,14 @@ class APIHandler(tornado.web.RequestHandler):
       "tag":re.split(',',base64.decodestring(self.get_argument('tag').encode("ascii")).decode("utf-8"))
            }
     
-    data["main_comment"] = re.sub(r',|\\|<|>|\?|\"|\'|[|]', '', data["main_comment"])
-    data["sub_comment"] = re.sub(r',|\\|<|>|\?|\"|\'|[|]', '', data["sub_comment"])
-    data["url"] = re.sub(r',|\\|<|>|\?|\"|\'|[|]', '', data["url"])
+    data["main_comment"] = re.sub(r',|\\|<|>|\"|\'|[|]', '', data["main_comment"])
+    data["sub_comment"] = re.sub(r',|\\|<|>|\"|\'|[|]', '', data["sub_comment"])
+    data["url"] = re.sub(r',|\\|<|>|\"|\'|[|]', '', data["url"])
     target_path = img_root_path + "/" + datetime.now().strftime('%Y%m')
     print("target_path = " + target_path)
     file_name = hashlib.md5((datetime.now().strftime('%s') + str(db.get_max_ID()) + data["main_comment"]).encode('utf-8')).hexdigest() + ".jpg"
+    if(not thumb.isAlive()):
+      thumb.start()
     thumb.append_task(target_path,file_name,data["url"])
 #    print(data["url"])
     data["path"] = img_root_url + "/" +datetime.now().strftime('%Y%m')+ "/" + file_name
