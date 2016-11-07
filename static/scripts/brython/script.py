@@ -94,7 +94,7 @@ def put_callback(data,text_status):
   i = 0
   add_html = ""
   add_html += "<h2>" + work['item'][i].main_comment + "</h2>"
-  add_html += "<img src = '" + work['item'][i].path + "' />"
+  add_html += "<img src = '" + work['item'][i].path + "?new Date().getTime()' />"
 
   add_html += "<p>" + work['item'][i].url + "</p>"
   add_html += "<p>" + work['item'][i].sub_comment + "</p>"
