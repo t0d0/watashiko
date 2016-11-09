@@ -7,7 +7,8 @@ import hashlib
 import os
 import threading
 import time
-NG_hash = "72d8ecec1defbfc3acb50c67dea9eb88"
+NG_hash = ["72d8ecec1defbfc3acb50c67dea9eb88",]#後で変える。
+#"4dd229433629e6ca32967e09a7027ff2"]
 
 
 
@@ -26,7 +27,10 @@ class GetThumbnailThread(threading.Thread):
         try:
           next_task = self.task.pop()
           os.system("mkdir " + next_task["path"])
-          os.system("wget -O " + next_task["path"]+ "/" +next_task["name"] + " http://capture.heartrails.com/huge?" + next_task["url"])
+          if(next_task["url"][-1:]=="/"):
+            next_task["url"] = next_task["url"][:-1]
+          print(next_task["url"] + next_task["name"])
+          os.system("wget -O " + next_task["path"]+ "/" +next_task["name"] + " http://api.thumbalizr.com/?api_key=7qgx1dhQtqQJPiRjZYHGHARxKivN&quality=90&width=250&encoding=png&delay=8&mode=screen&bwidth=1280&bheight=1024&url=?" + next_task["url"])
           next_task["path"]+ "/" +next_task["name"]
 #          if(check_NG(next_task["path"]+ "/" +next_task["name"])):
 #            print("img_ok")
@@ -47,7 +51,7 @@ class GetThumbnailThread(threading.Thread):
             self.task.append(next_task)
 
           
-      time.sleep(2)
+      time.sleep(10)
   
   def append_task(self,path,file_name,url):
     self.task.append({"path":path,"name":file_name,"url":url})
@@ -64,8 +68,13 @@ class GetThumbnailThread(threading.Thread):
           string+=str(unpack('c',b))
         except:
           break
+#    print(hashlib.md5(string.encode('utf-8')).hexdigest())
+    for i in NG_hash:
+      if(hashlib.md5(string.encode('utf-8')).hexdigest() == i):
+        return False
 
-    if(hashlib.md5(string.encode('utf-8')).hexdigest() == NG_hash):
-      return False
-    else:
-      return True
+    return True
+#thumb = GetThumbnailThread()
+#thumb.start()
+##thumb = GetThumbnailThread()
+#thumb.check_NG("/var/www/tornado/watashiko/static/img/201611/c47d4c0b8b8967f4b9fb5377717b826b.jpg")
