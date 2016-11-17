@@ -3,6 +3,8 @@
 from browser import window, alert,document
 from browser import document as doc
 from browser import ajax
+import datetime
+
 json = window.JSON
 jq = window.jQuery
 b64 = window.Base64
@@ -31,8 +33,8 @@ def get_complete(req):
     for i in range(0,len(data['item'])):
       add_html = "<li name = '"+str(data['item'][i].ID)+"' id = '"+ str(data['item'][i].ID) +"'>"
       add_html += "<h2>" + data['item'][i].main_comment + "</h2>"
-      add_html += "<img src = '" + data['item'][i].path + "?new Date().getTime()' />"
-      add_html += "<p>" + data['item'][i].url + "</p>"
+      add_html += "<a href = "+data['item'][i].url+"><img src = '" + data['item'][i].path + "?" + str(datetime.datetime.now()) +"' />"
+      add_html += "<p>" + data['item'][i].url + "</p></a>"
       add_html += "<p>" + data['item'][i].sub_comment + "</p>"
       add_html += "<p class = 'shikoiine' id = '"+str(data['item'][i].ID)+"'>shikoiine:" + str(data['item'][i].shikoiine) + "</p>"
       add_html += "<p class = 'naerune' id = '"+str(data['item'][i].ID)+"'>naerune:" + str(data['item'][i].naerune) + "</p>"
@@ -94,9 +96,9 @@ def put_callback(data,text_status):
   i = 0
   add_html = ""
   add_html += "<h2>" + work['item'][i].main_comment + "</h2>"
-  add_html += "<img src = '" + work['item'][i].path + "?new Date().getTime()' />"
+  add_html += "<a href = "+work['item'][i].url+"><img src = '" + work['item'][i].path + "?" + str(datetime.datetime.now()) +"' />"
 
-  add_html += "<p>" + work['item'][i].url + "</p>"
+  add_html += "<p>" + work['item'][i].url + "</p></a>"
   add_html += "<p>" + work['item'][i].sub_comment + "</p>"
   add_html += "<p class = 'shikoiine' id = '"+str(work['item'][i].ID)+"'>shikoiine:" + str(work['item'][i].shikoiine) + "</p>"
   add_html += "<p class = 'naerune' id = '"+str(work['item'][i].ID)+"'>naerune:" + str(work['item'][i].naerune) + "</p>"
